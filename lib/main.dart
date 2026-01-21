@@ -1,5 +1,6 @@
 import 'package:event_booking_app/components/bottom_vaigation_bar/my_bottom_navigation_bar.dart';
 import 'package:event_booking_app/firebase_options.dart';
+import 'package:event_booking_app/pages/admin/upload_evenets/upload_events.dart';
 import 'package:event_booking_app/pages/sign_up/sign_up_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,19 +25,21 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         textTheme: GoogleFonts.latoTextTheme(),
       ),
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshort) {
-          if (snapshort.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
 
-          if (snapshort.hasData) {
-            return MyBottomNvaigationBar();
-          }
-          return SignUpPage();
-        },
-      ),
+      // home: StreamBuilder<User?>(
+      //   stream: FirebaseAuth.instance.authStateChanges(),
+      //   builder: (context, snapshort) {
+      //     if (snapshort.connectionState == ConnectionState.waiting) {
+      //       return const Center(child: CircularProgressIndicator());
+      //     }
+
+      //     if (snapshort.hasData) {
+      //       return MyBottomNvaigationBar();
+      //     }
+      //     return SignUpPage();
+      //   },
+      // ),
+      home: UploadEventsPage(),
     );
   }
 }
