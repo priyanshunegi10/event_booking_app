@@ -1,3 +1,4 @@
+import 'package:event_booking_app/pages/events_details/events_detail_page.dart';
 import 'package:flutter/material.dart';
 
 class EventsCards extends StatelessWidget {
@@ -5,7 +6,7 @@ class EventsCards extends StatelessWidget {
   final String date;
   final String title;
   final String location;
-  final double price;
+  final String price;
   const EventsCards({
     super.key,
     required this.imagePath,
@@ -48,7 +49,7 @@ class EventsCards extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 10),
+
         Row(
           children: [
             Text(
@@ -59,7 +60,7 @@ class EventsCards extends StatelessWidget {
             Text(
               "$price\$",
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 22,
                 color: Color(0xff6351ec),
                 fontWeight: FontWeight.bold,
               ),
@@ -67,12 +68,13 @@ class EventsCards extends StatelessWidget {
             SizedBox(width: 20),
           ],
         ),
+        SizedBox(height: 5),
         Row(
           children: [
             Icon(Icons.location_on_outlined),
             Text(
               location,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
           ],
         ),

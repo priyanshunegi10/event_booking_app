@@ -2,7 +2,17 @@ import 'package:event_booking_app/pages/events_details/widgets/concerts_image.da
 import 'package:flutter/material.dart';
 
 class EventsDetailPage extends StatelessWidget {
-  const EventsDetailPage({super.key});
+  final String title, image, location, price, details, date;
+
+  const EventsDetailPage({
+    super.key,
+    required this.title,
+    required this.image,
+    required this.location,
+    required this.price,
+    required this.details,
+    required this.date,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +21,12 @@ class EventsDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ConcertsImage(),
+            ConcertsImage(
+              image: image,
+              date: date,
+              location: location,
+              title: title,
+            ),
             SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -23,10 +38,7 @@ class EventsDetailPage extends StatelessWidget {
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
-                  Text(
-                    "Lorem Ipsum is si a galley of type and  but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-                    style: TextStyle(fontSize: 15),
-                  ),
+                  Text(details, style: TextStyle(fontSize: 15)),
                   //
                   Row(
                     children: [
@@ -81,7 +93,7 @@ class EventsDetailPage extends StatelessWidget {
                     children: [
                       Container(
                         child: Text(
-                          "Amount : \$34",
+                          "Amount : \$$price",
                           style: TextStyle(
                             fontSize: 20,
                             color: Color(0xff6351ec),
@@ -89,7 +101,7 @@ class EventsDetailPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(width: 25),
+                      Spacer(),
                       Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 40,

@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
       //     return SignUpPage();
       //   },
       // ),
-      home: UploadEventsPage(),
+      home: MyBottomNvaigationBar(),
     );
   }
 }
