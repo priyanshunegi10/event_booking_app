@@ -1,6 +1,7 @@
 import 'package:event_booking_app/components/show_snakbar/show_snak_bar.dart';
 import 'package:event_booking_app/pages/home/home_page.dart';
 import 'package:event_booking_app/services/data_base/data_base.dart';
+import 'package:event_booking_app/services/shared_pref.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -32,6 +33,11 @@ class SignUp {
       UserCredential result = await auth.signInWithCredential(credential);
 
       User? userDetails = result.user;
+
+      await SharedPrefrenceHelper().saveUserEmail(userDetails!.email!);
+      await SharedPrefrenceHelper().saveUserId(userDetails.uid);
+      await SharedPrefrenceHelper().saveUserName(userDetails.displayName!);
+      await SharedPrefrenceHelper().saveUserImage(userDetails.photoURL!);
 
       if (userDetails != null) {
         if (result.additionalUserInfo!.isNewUser) {

@@ -26,20 +26,18 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.latoTextTheme(),
       ),
 
-      // home: StreamBuilder<User?>(
-      //   stream: FirebaseAuth.instance.authStateChanges(),
-      //   builder: (context, snapshort) {
-      //     if (snapshort.connectionState == ConnectionState.waiting) {
-      //       return const Center(child: CircularProgressIndicator());
-      //     }
-
-      //     if (snapshort.hasData) {
-      //       return MyBottomNvaigationBar();
-      //     }
-      //     return SignUpPage();
-      //   },
-      // ),
-      home: MyBottomNvaigationBar(),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshort) {
+          if (snapshort.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshort.hasData) {
+            return MyBottomNvaigationBar();
+          }
+          return SignUpPage();
+        },
+      ),
     );
   }
 }
