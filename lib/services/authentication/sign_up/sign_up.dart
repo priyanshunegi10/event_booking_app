@@ -1,3 +1,4 @@
+import 'package:event_booking_app/components/bottom_vaigation_bar/my_bottom_navigation_bar.dart';
 import 'package:event_booking_app/components/show_snakbar/show_snak_bar.dart';
 import 'package:event_booking_app/pages/home/home_page.dart';
 import 'package:event_booking_app/services/data_base/data_base.dart';
@@ -30,16 +31,25 @@ class SignUp {
         idToken: googleAuthentication.idToken,
       );
 
-      UserCredential result = await auth.signInWithCredential(credential);
+      UserCredential result = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
 
       User? userDetails = result.user;
 
-      await SharedPrefrenceHelper().saveUserEmail(userDetails!.email!);
-      await SharedPrefrenceHelper().saveUserId(userDetails.uid);
-      await SharedPrefrenceHelper().saveUserName(userDetails.displayName!);
-      await SharedPrefrenceHelper().saveUserImage(userDetails.photoURL!);
-
+      // ✅ SAHI TAREA: Sab kuch 'if' ke andar rakhein
       if (userDetails != null) {
+        // 1. Data Phone me Save karein (Shared Prefs)
+        await SharedPrefrenceHelper().saveUserId(
+          userDetails.uid,
+        ); // ✅ Ye sabse important hai
+        await SharedPrefrenceHelper().saveUserEmail(userDetails.email ?? "");
+        await SharedPrefrenceHelper().saveUserName(
+          userDetails.displayName ?? "",
+        );
+        await SharedPrefrenceHelper().saveUserImage(userDetails.photoURL ?? "");
+
+        // 2. Database ka kaam
         if (result.additionalUserInfo!.isNewUser) {
           Map<String, dynamic> userData = {
             'User name': userDetails.displayName,
@@ -49,24 +59,26 @@ class SignUp {
           };
 
           await DataBaseMethods().addUserDetails(userData, userDetails.uid);
+
           if (context.mounted) {
             showSnakBar(context, "Registered Successfully! Welcome.");
           }
         } else {
           if (context.mounted) {
-            showSnakBar(context, "Login successful! welcome back");
+            showSnakBar(context, "Login successful! Welcome back");
           }
         }
 
+        // 3. Home Page par bhejein
         if (context.mounted) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => HomePage()),
+            MaterialPageRoute(builder: (context) => MyBottomNvaigationBar()),
           );
         }
       }
     } on FirebaseException catch (e) {
-      showSnakBar(context, e.message!);
+      showSnakBar(context, e.message ?? "An error occurred");
     }
   }
 }

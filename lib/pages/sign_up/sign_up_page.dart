@@ -46,12 +46,12 @@ class _SignUpPageState extends State<SignUpPage> {
               setState(() {
                 isloading = true;
               });
-
               await SignUp().signInWithGoogle(context);
-
-              setState(() {
-                isloading = false;
-              });
+              if (mounted) {
+                setState(() {
+                  isloading = false;
+                });
+              }
             },
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 20),

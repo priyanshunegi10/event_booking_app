@@ -1,6 +1,8 @@
 import 'package:event_booking_app/components/show_snakbar/show_snak_bar.dart';
 import 'package:event_booking_app/pages/events_details/widgets/concerts_image.dart';
 import 'package:event_booking_app/services/APIs/data.dart';
+import 'package:event_booking_app/services/data_base/data_base.dart';
+import 'package:event_booking_app/services/shared_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -28,12 +30,20 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
   int ticket = 1;
 
   int total = 0;
+  String? username, image, userId;
 
   @override
   void initState() {
     total = int.parse(widget.price) * ticket;
-
+    onTheLoad();
     super.initState();
+  }
+
+  Future onTheLoad() async {
+    username = await SharedPrefrenceHelper().getUserName();
+    image = await SharedPrefrenceHelper().getUserImage();
+    userId = await SharedPrefrenceHelper().getUserId();
+    setState(() {});
   }
 
   @override
@@ -191,13 +201,14 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
     } catch (e, s) {
       print(e);
       print(s);
+      showSnakBar(context, "Payment Error: $e");
     }
   }
 
-  displayPaymentSheet(String amount) async {
+  Future displayPaymentSheet(String amount) async {
     try {
       await Stripe.instance
-          .presentCustomerSheet()
+          .presentPaymentSheet()
           .then((value) async {
             Map<String, dynamic> bookingDetails = {
               "Number of tickets": ticket.toString(),
@@ -205,7 +216,18 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
               "Event": widget.title,
               "Location": widget.location,
               "Date": widget.date,
+              "Name": username,
+              "Image": image,
+              "UserId": userId,
+              "Event image": widget.image,
             };
+
+            await DataBaseMethods()
+                .addUserBooking(bookingDetails, userId!)
+                .then((value) async {
+                  await DataBaseMethods().addAdminBookins(bookingDetails);
+                });
+
             showDialog(
               context: context,
               builder: (_) => AlertDialog(
@@ -231,7 +253,7 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
     }
   }
 
-  createPaymentIntent(String amount, String currency) async {
+  Future createPaymentIntent(String amount, String currency) async {
     try {
       Map<String, dynamic> body = {
         "amount": calculateAmount(amount),
@@ -242,18 +264,31 @@ class _EventsDetailPageState extends State<EventsDetailPage> {
       var response = await http.post(
         Uri.parse("https://api.stripe.com/v1/payment_intents"),
         headers: {
-          "Authorixation": "Bearer $secretKey",
+          "Authorization": "Bearer $secretKey", // ✅ Spelling check karein
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: body,
       );
+
+      // 👇 YEH LINE ERROR PAKDEGI
+      print("Stripe Response Code: ${response.statusCode}");
+      print("Stripe Response Body: ${response.body}");
+
+      if (response.statusCode != 200) {
+        throw Exception("Failed to create PaymentIntent: ${response.body}");
+      }
+
       return jsonDecode(response.body);
     } catch (e) {
-      showSnakBar(context, e.toString());
+      print("Error in createPaymentIntent: $e");
+      // User ko bhi dikhayein
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Stripe Error: $e")));
     }
   }
 
-  calculateAmount(String amount) {
+  String calculateAmount(String amount) {
     final calculatedAmount = (int.parse(amount)) * 100;
 
     return calculatedAmount.toString();

@@ -37,7 +37,6 @@ class _HomePageState extends State<HomePage> {
             return Center(child: CircularProgressIndicator());
           }
           int eventsCount = snapshot.data.docs.length;
-
           return Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
