@@ -116,7 +116,7 @@ class _BookingPageState extends State<BookingPage> {
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(20),
                                   child: Image.asset(
-                                    "assets/images/concerts.jpg",
+                                    ds["Event image"], 
                                     height: 150,
                                     width: 160,
                                     fit: BoxFit.cover,

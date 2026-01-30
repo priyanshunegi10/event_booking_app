@@ -2,6 +2,7 @@ import 'package:event_booking_app/components/bottom_vaigation_bar/my_bottom_navi
 import 'package:event_booking_app/firebase_options.dart';
 import 'package:event_booking_app/pages/admin/upload_evenets/upload_events.dart';
 import 'package:event_booking_app/pages/booking/booking_page.dart';
+import 'package:event_booking_app/pages/category_events/category_events.dart';
 import 'package:event_booking_app/pages/sign_up/sign_up_page.dart';
 import 'package:event_booking_app/services/APIs/data.dart';
 import 'package:firebase_auth/firebase_auth.dart';

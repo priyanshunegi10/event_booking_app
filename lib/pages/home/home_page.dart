@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:event_booking_app/pages/category_events/category_events.dart';
 import 'package:event_booking_app/pages/events_details/events_detail_page.dart';
 import 'package:event_booking_app/pages/home/widgets/events_cards.dart';
 import 'package:event_booking_app/pages/home/widgets/events_types_card.dart';
@@ -107,18 +108,54 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                           children: [
                             EventsTypesCard(
+                              ontap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        CategoryEvents(evenetCatogory: "Music"),
+                                  ),
+                                );
+                              },
                               imagePath: "assets/icons/music-note.png",
                               title: "Music",
                             ),
                             EventsTypesCard(
+                              ontap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        CategoryEvents(evenetCatogory: "Clothing"),
+                                  ),
+                                );
+                              },
                               imagePath: "assets/icons/t-shirt.png",
                               title: "Clothing",
                             ),
                             EventsTypesCard(
+                              ontap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        CategoryEvents(evenetCatogory: "Festival"),
+                                  ),
+                                );
+                              },
                               imagePath: "assets/icons/party.png",
                               title: "Festival",
                             ),
                             EventsTypesCard(
+                              ontap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        CategoryEvents(evenetCatogory: "Food"),
+                                  ),
+                                );
+                              },
                               imagePath: "assets/icons/food.png",
                               title: "Food",
                             ),
@@ -155,43 +192,44 @@ class _HomePageState extends State<HomePage> {
                         itemBuilder: (context, index) {
                           DocumentSnapshot ds = snapshot.data.docs[index];
 
-                          String formattedDate = "";
-                          try {
-                            String inputDate = ds["Date"];
-                            DateTime parseDate = DateTime.parse(inputDate);
-                            formattedDate = DateFormat(
-                              "MMM , dd",
-                            ).format(parseDate);
-                          } catch (e) {
-                            formattedDate = ds["Date"];
-                          }
+                          String inputdate = ds["Date"];
+                          DateTime parseDate = DateTime.parse(inputdate);
 
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EventsDetailPage(
+                          String formattedDate = DateFormat(
+                            'MMM,dd',
+                          ).format(parseDate);
+
+                          DateTime currentDate = DateTime.now();
+                          bool haspassed = currentDate.isAfter(parseDate);
+
+                          return haspassed
+                              ? Container()
+                              : GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => EventsDetailPage(
+                                          title: ds["Name"],
+                                          image: ds["Image"],
+                                          location: ds["Location"],
+                                          price: ds["price"],
+                                          details: ds["events Details"],
+                                          date: ds["Date"],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: EventsCards(
+                                    imagePath: ds["Image"] == ""
+                                        ? 'assets/images/fashion.jpg'
+                                        : ds["Image"],
+                                    date: formattedDate,
                                     title: ds["Name"],
-                                    image: ds["Image"],
                                     location: ds["Location"],
                                     price: ds["price"],
-                                    details: ds["events Details"],
-                                    date: ds["Date"],
                                   ),
-                                ),
-                              );
-                            },
-                            child: EventsCards(
-                              imagePath: ds["Image"] == ""
-                                  ? 'assets/images/fashion.jpg'
-                                  : ds["Image"],
-                              date: formattedDate,
-                              title: ds["Name"],
-                              location: ds["Location"],
-                              price: ds["price"],
-                            ),
-                          );
+                                );
                         },
                       ),
                     ],
